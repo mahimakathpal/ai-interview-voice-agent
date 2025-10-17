@@ -1,15 +1,15 @@
 "use client"
-import { Button } from '@/components/ui/button';
-import { Video } from 'lucide-react';
-import React,{useEffect, useState} from 'react'
-import { supabase } from '@/services/supabaseClient';
+import React ,{useEffect,useState} from 'react'
 import { useUser } from '@/app/provider';
-import InterviewCard from './InterviewCard';
-import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { supabase } from '@/services/supabaseClient';
+import { Video } from 'lucide-react';
+import InterviewCard from '../dashboard/_components/InterviewCard';
 import Link from 'next/link';
 
-function LatestInterviewsList() {
-    const [interviewList,setInterviewList] = useState([]);
+
+function AllInterview() {
+     const [interviewList,setInterviewList] = useState([]);
     const {user} = useUser();
 
     useEffect(()=>{
@@ -21,16 +21,16 @@ const GetInterviewList = async () => {
     .from('Interviews')
     .select('*, interview_feedback(userEmail)')
     .eq('userEmail', user?.email)
-    .order('id', { ascending: false })
-    .limit(6);
+    .order('id', { ascending: false });
 
   console.log(Interviews);
   setInterviewList(Interviews);
 };
 
+
   return (
     <div className='my-5'>
-      <h2 className ='font-bold text-2xl'>Previously Created Interviews</h2>
+      <h2 className ='font-bold text-2xl'>All Previously Created Interviews</h2>
       {interviewList?.length==0&&
        <Link
         href={"/dashboard/create-interview"}><div className ='p-5 flex flex-col gap-3 items-center mt-5 bg-white'>
@@ -46,7 +46,8 @@ const GetInterviewList = async () => {
          </div>
          }
     </div>
+  
   )
 }
 
-export default LatestInterviewsList
+export default AllInterview
