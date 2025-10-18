@@ -24,32 +24,49 @@ function QuestionList({ formData , onCreateLink }) {
     }
   }, [formData]);
 
-  const GenerateQuestionList = async () => {
-    setLoading(true);
-    try {
-      const result = await axios.post('/api/ai-model', {
-        ...formData,
-      });
+const GenerateQuestionList = async () => {
+  setLoading(true);
+  try {
+    const result = await axios.post('/api/ai-model', {
+      ...formData,
+    });
 
-      console.log("Raw AI response:", result.data.content);
+    console.log("Raw AI response:", result.data.content);
 
-      let content = result.data.content
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-        .trim();
+    let content = result.data.content
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
 
-      const parsed = JSON.parse(content);
+    // 🧠 Try to extract JSON substring only
+    const jsonStart = content.indexOf("{");
+    const jsonEnd = content.lastIndexOf("}");
 
-      console.log("Parsed questions:", parsed);
-
-      setQuestionList(parsed?.interviewQuestions || []);
-    } catch (e) {
-      console.error("Parsing error:", e);
-      toast('Server Error, Try Again!');
-    } finally {
-      setLoading(false);
+    if (jsonStart === -1 || jsonEnd === -1) {
+      throw new Error("No valid JSON structure found in AI response");
     }
-  };
+
+    const jsonString = content.substring(jsonStart, jsonEnd + 1);
+
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonString);
+    } catch (parseError) {
+      console.error("JSON parse error:", parseError);
+      toast.error("Invalid AI response format. Please try again.");
+      return;
+    }
+
+    console.log("Parsed questions:", parsed);
+    setQuestionList(parsed?.interviewQuestions || []);
+  } catch (e) {
+    console.error("Parsing error:", e);
+    toast.error("Server Error, Try Again!");
+  } finally {
+    setLoading(false);
+  }
+};
+
     const onFinish= async()=>  {
       setSaveLoading(true);
       const interview_id = uuidv4();
