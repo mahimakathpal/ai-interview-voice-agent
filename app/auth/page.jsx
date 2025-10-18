@@ -8,14 +8,11 @@ import { useRouter } from "next/navigation";
 function Login() {
   const router = useRouter();
 
-  /**
-   * Used to Sign In with Google
-   */
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "http://localhost:3000/dashboard", // ✅ redirect after login
+        redirectTo: "https://ai-recruiter-coral.vercel.app/dashboard", // ✅ production redirect
       },
     });
 
