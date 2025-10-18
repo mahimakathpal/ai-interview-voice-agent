@@ -3,7 +3,6 @@
 AiCruiter is an **AI-driven recruitment platform** that allows organizations to **automate candidate interviews using voice-based AI agents**.  
 It helps recruiters save time, reduce bias, and make smarter hiring decisions — all in one seamless web application.
 
-![AiCruiter Hero](./public/preview.png)
 
 ---
 
