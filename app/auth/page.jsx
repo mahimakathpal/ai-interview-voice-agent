@@ -9,10 +9,15 @@ function Login() {
   const router = useRouter();
 
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const redirectUrl =
+      typeof window !== "undefined" && window.location.hostname === "localhost"
+        ? "http://localhost:3000/dashboard"
+        : "https://ai-recruiter-coral.vercel.app/dashboard";
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "https://ai-recruiter-coral.vercel.app/dashboard", // ✅ production redirect
+        redirectTo: redirectUrl, // ✅ dynamically correct
       },
     });
 
@@ -31,7 +36,6 @@ function Login() {
           height={100}
           className="w-[180px]"
         />
-
         <div className="flex items-center flex-col">
           <Image
             src={"/login.png"}
